@@ -1,3 +1,4 @@
+
 "use client";
 
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
@@ -28,13 +29,13 @@ const defaultIcon = createIcon("#94a3b8");
 const selectedIcon = createIcon("#D4AF37", 40);
 const emergencyIcon = createIcon("#f87171", 40, true);
 
-interface MapControllerProps {
+interface MapProps {
     branches: Branch[];
     selectedBranch: Branch | null;
     onMarkerSelect: (branch: Branch) => void;
 }
 
-function MapFeatures({ branches, selectedBranch, onMarkerSelect }: MapControllerProps) {
+function MapFeatures({ branches, selectedBranch, onMarkerSelect }: MapProps) {
   const map = useMap();
 
   useEffect(() => {
@@ -90,7 +91,7 @@ function MapFeatures({ branches, selectedBranch, onMarkerSelect }: MapController
   );
 }
 
-export default function InteractiveMap({ branches, selectedBranch, onMarkerSelect }: MapControllerProps) {
+export default function InteractiveMap({ branches, selectedBranch, onMarkerSelect }: MapProps) {
   const initialPosition: [number, number] = [23.6345, -102.5528];
   const initialZoom = 5;
 
