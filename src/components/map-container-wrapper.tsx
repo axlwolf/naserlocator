@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useEffect } from 'react';
@@ -48,12 +49,12 @@ function MapEffect({ selectedBranch }: { selectedBranch: Branch | null }) {
 }
 
 interface MapProps {
-  branches: Branch[];
+  branches?: Branch[];
   selectedBranch: Branch | null;
   onMarkerSelect: (branch: Branch) => void;
 }
 
-export default function MapContainerWrapper({ branches, selectedBranch, onMarkerSelect }: MapProps) {
+export default function MapContainerWrapper({ branches = [], selectedBranch, onMarkerSelect }: MapProps) {
     const initialPosition: [number, number] = [23.6345, -102.5528];
     const initialZoom = 5;
 
