@@ -90,15 +90,6 @@ export default function NaserApp({ branches }: { branches: Branch[] }) {
     }
   };
 
-  const mapComponent = useMemo(() => (
-    <Map 
-      branches={filteredBranches}
-      selectedBranch={selectedBranch}
-      onMarkerSelect={setSelectedBranch}
-    />
-  ), [filteredBranches, selectedBranch]);
-
-
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="space-y-4 mb-8">
@@ -134,7 +125,11 @@ export default function NaserApp({ branches }: { branches: Branch[] }) {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2">
-          {mapComponent}
+          <Map 
+            branches={filteredBranches}
+            selectedBranch={selectedBranch}
+            onMarkerSelect={setSelectedBranch}
+          />
         </div>
         <div className="lg:col-span-1 h-[600px] overflow-y-auto pr-2 space-y-4">
             <h3 className="text-2xl font-semibold text-foreground">
