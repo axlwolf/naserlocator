@@ -14,19 +14,19 @@ import { Skeleton } from './ui/skeleton';
 import BranchCard from './branch-card';
 import { LocateIcon, X } from 'lucide-react';
 
+const InteractiveMap = dynamic(
+  () => import('@/components/map-container-wrapper'),
+  { 
+    ssr: false,
+    loading: () => <Skeleton className="h-[600px] w-full rounded-lg" />
+  }
+);
+
 
 export default function NaserApp({ branches }: { branches: Branch[] }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedService, setSelectedService] = useState<Service | 'all'>('all');
   const [selectedBranch, setSelectedBranch] = useState<Branch | null>(branches.find(b => b.status === 'urgencias') || branches[0] || null);
-
-  const Map = useMemo(() => dynamic(
-    () => import('@/components/map-container-wrapper'),
-    { 
-      ssr: false,
-      loading: () => <Skeleton className="h-[600px] w-full rounded-lg" />
-    }
-  ), []);
 
   const filteredBranches = useMemo(() => {
     return branches.filter(branch => {
@@ -44,16 +44,6 @@ export default function NaserApp({ branches }: { branches: Branch[] }) {
       setSelectedBranch(nearestUrgent);
     }
   };
-
-  const mapComponent = useMemo(() => {
-    return (
-      <Map
-        branches={filteredBranches}
-        selectedBranch={selectedBranch}
-        onMarkerSelect={setSelectedBranch}
-      />
-    );
-  }, [filteredBranches, selectedBranch, Map]);
 
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -90,7 +80,11 @@ export default function NaserApp({ branches }: { branches: Branch[] }) {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2">
-            {mapComponent}
+            <InteractiveMap
+              branches={filteredBranches}
+              selectedBranch={selectedBranch}
+              onMarkerSelect={setSelectedBranch}
+            />
         </div>
         <div className="lg:col-span-1 h-[600px] overflow-y-auto pr-2 space-y-4">
             <h3 className="text-2xl font-semibold text-foreground">
