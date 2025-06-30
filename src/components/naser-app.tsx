@@ -1,14 +1,20 @@
 "use client";
 
 import { useState, useMemo } from 'react';
+import dynamic from 'next/dynamic';
 import type { Branch, Service } from '@/lib/types';
 import { allServices } from '@/lib/data';
 import { Input } from './ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 import { Button } from './ui/button';
-import { List, LocateIcon, MapIcon, X } from 'lucide-react';
+import { LocateIcon, X } from 'lucide-react';
 import BranchCard from './branch-card';
-import MapPlaceholder from './map-placeholder';
+import { Skeleton } from './ui/skeleton';
+
+const InteractiveMap = dynamic(() => import('./interactive-map'), {
+  ssr: false,
+  loading: () => <Skeleton className="h-[600px] w-full rounded-lg" />,
+});
 
 interface NaserAppProps {
   branches: Branch[];
@@ -17,9 +23,8 @@ interface NaserAppProps {
 export default function NaserApp({ branches }: NaserAppProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedService, setSelectedService] = useState<Service | 'all'>('all');
-  const [selectedBranch, setSelectedBranch] = useState<Branch | null>(branches.find(b => b.status === 'urgencias') || branches[0]);
-  const [view, setView] = useState<'map' | 'list'>('map');
-
+  const [selectedBranch, setSelectedBranch] = useState<Branch | null>(branches.find(b => b.status === 'urgencias') || branches[0] || null);
+  
   const filteredBranches = useMemo(() => {
     return branches.filter(branch => {
       const matchesSearch = branch.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -73,10 +78,16 @@ export default function NaserApp({ branches }: NaserAppProps) {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2">
-            <MapPlaceholder selectedBranch={selectedBranch} />
+            <InteractiveMap 
+              branches={filteredBranches}
+              selectedBranch={selectedBranch}
+              onMarkerSelect={setSelectedBranch}
+            />
         </div>
         <div className="lg:col-span-1 h-[600px] overflow-y-auto pr-2 space-y-4">
-            <h3 className="text-2xl font-semibold text-foreground">Sucursales</h3>
+            <h3 className="text-2xl font-semibold text-foreground">
+              Sucursales ({filteredBranches.length})
+            </h3>
             {filteredBranches.length > 0 ? (
                 filteredBranches.map(branch => (
                     <BranchCard 
