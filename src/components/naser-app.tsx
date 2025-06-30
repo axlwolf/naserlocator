@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import type { Branch, Service } from '@/lib/types';
 import { allServices } from '@/lib/data';
 import { Input } from './ui/input';
@@ -46,6 +46,14 @@ export default function NaserApp({ branches }: NaserAppProps) {
     }
   };
 
+  const mapComponent = useMemo(() => (
+    <InteractiveMap
+      branches={filteredBranches}
+      selectedBranch={selectedBranch}
+      onMarkerSelect={setSelectedBranch}
+    />
+  ), [filteredBranches, selectedBranch]);
+
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="space-y-4 mb-8">
@@ -81,11 +89,7 @@ export default function NaserApp({ branches }: NaserAppProps) {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2">
-            <InteractiveMap
-              branches={filteredBranches}
-              selectedBranch={selectedBranch}
-              onMarkerSelect={setSelectedBranch}
-            />
+            {mapComponent}
         </div>
         <div className="lg:col-span-1 h-[600px] overflow-y-auto pr-2 space-y-4">
             <h3 className="text-2xl font-semibold text-foreground">
