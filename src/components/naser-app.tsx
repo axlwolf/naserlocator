@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 
 import type { Branch, Service } from '@/lib/types';
@@ -18,7 +18,12 @@ import { LocateIcon, X } from 'lucide-react';
 export default function NaserApp({ branches }: { branches: Branch[] }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedService, setSelectedService] = useState<Service | 'all'>('all');
-  const [selectedBranch, setSelectedBranch] = useState<Branch | null>(branches.find(b => b.status === 'urgencias') || branches[0] || null);
+  const [selectedBranch, setSelectedBranch] = useState<Branch | null>(null);
+
+  // Set initial branch on client side to avoid hydration issues
+  useEffect(() => {
+    setSelectedBranch(branches.find(b => b.status === 'urgencias') || branches[0] || null);
+  }, [branches]);
 
   const InteractiveMap = useMemo(() => dynamic(
     () => import('@/components/map-container-wrapper'),
@@ -149,4 +154,3 @@ export default function NaserApp({ branches }: { branches: Branch[] }) {
     </div>
   );
 }
-
