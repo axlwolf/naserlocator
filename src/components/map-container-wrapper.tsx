@@ -10,6 +10,7 @@ import type { Branch } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { Navigation } from 'lucide-react';
 
+// --- Icon Creation Logic ---
 const createIcon = (color: string, size: number = 32, pulse: boolean = false) => {
     return L.divIcon({
         html: `
@@ -30,10 +31,12 @@ const defaultIcon = createIcon("#94a3b8");
 const selectedIcon = createIcon("#D4AF37", 40);
 const emergencyIcon = createIcon("#f87171", 40, true);
 
+// --- Helper Functions ---
 const getDirections = (branch: Branch) => {
   window.open(`https://www.google.com/maps/dir/?api=1&destination=${branch.coordinates.lat},${branch.coordinates.lng}`, '_blank');
 };
 
+// --- Map Effect for flying to selected branch ---
 function MapEffect({ selectedBranch }: { selectedBranch: Branch | null }) {
   const map = useMap();
   useEffect(() => {
@@ -48,13 +51,14 @@ function MapEffect({ selectedBranch }: { selectedBranch: Branch | null }) {
   return null;
 }
 
-interface MapProps {
-  branches?: Branch[];
+// --- Main Map Component ---
+interface MapContainerWrapperProps {
+  branches: Branch[];
   selectedBranch: Branch | null;
   onMarkerSelect: (branch: Branch) => void;
 }
 
-export default function MapContainerWrapper({ branches = [], selectedBranch, onMarkerSelect }: MapProps) {
+export default function MapContainerWrapper({ branches = [], selectedBranch, onMarkerSelect }: MapContainerWrapperProps) {
     const initialPosition: [number, number] = [23.6345, -102.5528];
     const initialZoom = 5;
 
@@ -91,12 +95,12 @@ export default function MapContainerWrapper({ branches = [], selectedBranch, onM
                   >
                     <Popup autoPan={false}>
                       <div className="p-1 space-y-2">
-                         <h4 className="font-bold text-slate-800">{branch.name}</h4>
-                         <p className="text-xs text-slate-600">{branch.address}</p>
-                         <Button size="sm" className="w-full" onClick={() => getDirections(branch)}>
+                          <h4 className="font-bold text-slate-800">{branch.name}</h4>
+                          <p className="text-xs text-slate-600">{branch.address}</p>
+                          <Button size="sm" className="w-full" onClick={() => getDirections(branch)}>
                               <Navigation className="mr-2 h-4 w-4"/>
                               Cómo llegar
-                         </Button>
+                          </Button>
                       </div>
                     </Popup>
                   </Marker>

@@ -13,7 +13,14 @@ import { Button } from './ui/button';
 import { Skeleton } from './ui/skeleton';
 import BranchCard from './branch-card';
 import { LocateIcon, X } from 'lucide-react';
-import MapFeatures from './map-features';
+
+const Map = dynamic(
+  () => import('@/components/map-container-wrapper'),
+  { 
+    ssr: false,
+    loading: () => <Skeleton className="h-[600px] w-full rounded-lg" />
+  }
+);
 
 // --- Componente Principal de la Aplicación ---
 export default function NaserApp({ branches }: { branches: Branch[] }) {
@@ -25,14 +32,6 @@ export default function NaserApp({ branches }: { branches: Branch[] }) {
   useEffect(() => {
     setSelectedBranch(branches.find(b => b.status === 'urgencias') || branches[0] || null);
   }, [branches]);
-  
-  const MapContainerWrapper = useMemo(() => dynamic(
-    () => import('@/components/map-container-wrapper'),
-    { 
-      ssr: false,
-      loading: () => <Skeleton className="h-[600px] w-full rounded-lg" />
-    }
-  ), []);
 
   const filteredBranches = useMemo(() => {
     return branches.filter(branch => {
@@ -125,13 +124,11 @@ export default function NaserApp({ branches }: { branches: Branch[] }) {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2">
-            <MapContainerWrapper>
-                <MapFeatures
-                    branches={filteredBranches}
-                    selectedBranch={selectedBranch}
-                    onMarkerSelect={setSelectedBranch}
-                />
-            </MapContainerWrapper>
+          <Map
+            branches={filteredBranches}
+            selectedBranch={selectedBranch}
+            onMarkerSelect={setSelectedBranch}
+          />
         </div>
         <div className="lg:col-span-1 h-[600px] overflow-y-auto pr-2 space-y-4">
             <h3 className="text-2xl font-semibold text-foreground">
