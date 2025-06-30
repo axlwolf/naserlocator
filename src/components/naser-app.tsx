@@ -1,29 +1,30 @@
-
 "use client";
 
 import { useState, useMemo } from 'react';
+import dynamic from 'next/dynamic';
+
 import type { Branch, Service } from '@/lib/types';
 import { allServices } from '@/lib/data';
+
 import { Input } from './ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 import { Button } from './ui/button';
-import { LocateIcon, X } from 'lucide-react';
-import BranchCard from './branch-card';
 import { Skeleton } from './ui/skeleton';
-import dynamic from 'next/dynamic';
+import BranchCard from './branch-card';
+import { LocateIcon, X } from 'lucide-react';
+
+const InteractiveMap = dynamic(
+  () => import('@/components/map-container-wrapper'),
+  { 
+    ssr: false,
+    loading: () => <Skeleton className="h-[600px] w-full rounded-lg" />
+  }
+);
 
 export default function NaserApp({ branches }: { branches: Branch[] }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedService, setSelectedService] = useState<Service | 'all'>('all');
   const [selectedBranch, setSelectedBranch] = useState<Branch | null>(branches.find(b => b.status === 'urgencias') || branches[0] || null);
-
-  const InteractiveMap = useMemo(() => dynamic(
-    () => import('@/components/map-container-wrapper'),
-    { 
-      ssr: false,
-      loading: () => <Skeleton className="h-[600px] w-full rounded-lg" />
-    }
-  ), []);
 
   const filteredBranches = useMemo(() => {
     return branches.filter(branch => {
@@ -42,6 +43,15 @@ export default function NaserApp({ branches }: { branches: Branch[] }) {
       setSelectedBranch(nearestUrgent);
     }
   };
+
+  const mapComponent = useMemo(() => (
+    <InteractiveMap
+      branches={filteredBranches}
+      selectedBranch={selectedBranch}
+      onMarkerSelect={setSelectedBranch}
+    />
+  ), [filteredBranches, selectedBranch]);
+
 
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -78,11 +88,7 @@ export default function NaserApp({ branches }: { branches: Branch[] }) {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2">
-            <InteractiveMap
-              branches={filteredBranches}
-              selectedBranch={selectedBranch}
-              onMarkerSelect={setSelectedBranch}
-            />
+            {mapComponent}
         </div>
         <div className="lg:col-span-1 h-[600px] overflow-y-auto pr-2 space-y-4">
             <h3 className="text-2xl font-semibold text-foreground">
