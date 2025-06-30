@@ -23,7 +23,7 @@ const InteractiveMap = dynamic(
   }
 );
 
-
+// --- Componente Principal de la Aplicación ---
 export default function NaserApp({ branches }: { branches: Branch[] }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedService, setSelectedService] = useState<Service | 'all'>('all');
@@ -77,7 +77,6 @@ export default function NaserApp({ branches }: { branches: Branch[] }) {
         }
       });
     } else {
-      // Fallback for when geolocation is not available
       const nearestUrgent = branches.find(b => b.status === 'urgencias');
       if (nearestUrgent) {
         setSelectedBranch(nearestUrgent);
@@ -121,11 +120,11 @@ export default function NaserApp({ branches }: { branches: Branch[] }) {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2">
-            <InteractiveMap 
-              branches={filteredBranches}
-              selectedBranch={selectedBranch}
-              onMarkerSelect={setSelectedBranch}
-            />
+            <InteractiveMap
+                branches={filteredBranches}
+                selectedBranch={selectedBranch}
+                onMarkerSelect={setSelectedBranch}
+              />
         </div>
         <div className="lg:col-span-1 h-[600px] overflow-y-auto pr-2 space-y-4">
             <h3 className="text-2xl font-semibold text-foreground">

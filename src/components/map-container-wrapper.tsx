@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useEffect } from 'react';
@@ -10,13 +9,7 @@ import type { Branch } from '@/lib/types';
 import { Button } from './ui/button';
 import { Navigation } from 'lucide-react';
 
-// --- Icon Creation Logic ---
 const createIcon = (color: string, size: number = 32, pulse: boolean = false) => {
-    // This check is a safeguard, but since this is a client component, window should be defined.
-    if (typeof window === 'undefined') {
-        // Return a dummy icon for SSR, though it shouldn't be needed with dynamic import.
-        return L.divIcon({ html: '' }); 
-    }
     return L.divIcon({
         html: `
             <div class="${pulse ? 'animate-pulse' : ''}" style="position: relative; width: ${size}px; height: ${size}px;">
@@ -36,11 +29,12 @@ const defaultIcon = createIcon("#94a3b8");
 const selectedIcon = createIcon("#D4AF37", 40);
 const emergencyIcon = createIcon("#f87171", 40, true);
 
-// --- MapUpdater Component ---
-// This component uses the useMap hook to update the map view when the selected branch changes.
-function MapUpdater({ selectedBranch }: { selectedBranch: Branch | null }) {
+const getDirections = (branch: Branch) => {
+  window.open(`https://www.google.com/maps/dir/?api=1&destination=${branch.coordinates.lat},${branch.coordinates.lng}`, '_blank');
+};
+
+function MapEffect({ selectedBranch }: { selectedBranch: Branch | null }) {
   const map = useMap();
-  
   useEffect(() => {
     if (selectedBranch) {
       map.flyTo([selectedBranch.coordinates.lat, selectedBranch.coordinates.lng], 14, {
@@ -50,13 +44,8 @@ function MapUpdater({ selectedBranch }: { selectedBranch: Branch | null }) {
     }
   }, [selectedBranch, map]);
 
-  return null; // This component does not render anything itself.
+  return null;
 }
-
-const getDirections = (branch: Branch) => {
-  window.open(`https://www.google.com/maps/dir/?api=1&destination=${branch.coordinates.lat},${branch.coordinates.lng}`, '_blank');
-};
-
 
 interface MapWrapperProps {
   branches: Branch[];
@@ -79,44 +68,38 @@ export default function MapWrapper({ branches, selectedBranch, onMarkerSelect }:
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
                 url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
             />
-            
-            <MapUpdater selectedBranch={selectedBranch} />
-
+            <MapEffect selectedBranch={selectedBranch} />
             {branches.map(branch => {
-              const isSelected = selectedBranch?.id === branch.id;
-              const isEmergency = branch.status === 'urgencias';
-              let icon = defaultIcon;
-              if (isSelected) {
-                  icon = selectedIcon;
-              } else if (isEmergency) {
-                  icon = emergencyIcon;
-              }
+                const isSelected = selectedBranch?.id === branch.id;
+                const isEmergency = branch.status === 'urgencias';
+                let icon = defaultIcon;
+                if (isSelected) {
+                    icon = selectedIcon;
+                } else if (isEmergency) {
+                    icon = emergencyIcon;
+                }
 
-              if (!icon) return null; // Guard against SSR icon creation issues.
-
-              return (
-                <Marker
-                  key={branch.id}
-                  position={[branch.coordinates.lat, branch.coordinates.lng]}
-                  icon={icon}
-                  eventHandlers={{
-                    click: () => {
-                      onMarkerSelect(branch);
-                    },
-                  }}
-                >
-                  <Popup autoPan={false}>
-                    <div className="p-1 space-y-2">
-                       <h4 className="font-bold text-slate-800">{branch.name}</h4>
-                       <p className="text-xs text-slate-600">{branch.address}</p>
-                       <Button size="sm" className="w-full" onClick={() => getDirections(branch)}>
-                            <Navigation className="mr-2 h-4 w-4"/>
-                            Cómo llegar
-                       </Button>
-                    </div>
-                  </Popup>
-                </Marker>
-              )
+                return (
+                  <Marker
+                    key={branch.id}
+                    position={[branch.coordinates.lat, branch.coordinates.lng]}
+                    icon={icon}
+                    eventHandlers={{
+                      click: () => onMarkerSelect(branch),
+                    }}
+                  >
+                    <Popup autoPan={false}>
+                      <div className="p-1 space-y-2">
+                         <h4 className="font-bold text-slate-800">{branch.name}</h4>
+                         <p className="text-xs text-slate-600">{branch.address}</p>
+                         <Button size="sm" className="w-full" onClick={() => getDirections(branch)}>
+                              <Navigation className="mr-2 h-4 w-4"/>
+                              Cómo llegar
+                         </Button>
+                      </div>
+                    </Popup>
+                  </Marker>
+                );
             })}
         </MapContainer>
     );
