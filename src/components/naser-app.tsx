@@ -16,6 +16,14 @@ interface NaserAppProps {
   branches: Branch[];
 }
 
+const InteractiveMap = dynamic(
+  () => import('@/components/map-container-wrapper'),
+  { 
+    ssr: false,
+    loading: () => <Skeleton className="h-[600px] w-full rounded-lg" />
+  }
+);
+
 export default function NaserApp({ branches }: NaserAppProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedService, setSelectedService] = useState<Service | 'all'>('all');
@@ -38,14 +46,6 @@ export default function NaserApp({ branches }: NaserAppProps) {
       setSelectedBranch(nearestUrgent);
     }
   };
-
-  const InteractiveMap = useMemo(() => dynamic(
-    () => import('@/components/map-container-wrapper'),
-    { 
-      ssr: false,
-      loading: () => <Skeleton className="h-[600px] w-full rounded-lg" />
-    }
-  ), []);
 
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
