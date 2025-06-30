@@ -14,6 +14,7 @@ import { Skeleton } from './ui/skeleton';
 import BranchCard from './branch-card';
 import { LocateIcon, X } from 'lucide-react';
 
+
 const InteractiveMap = dynamic(
   () => import('@/components/map-container-wrapper'),
   { 
@@ -39,11 +40,51 @@ export default function NaserApp({ branches }: { branches: Branch[] }) {
   }, [branches, searchTerm, selectedService]);
 
   const handleLocateNearest = () => {
-    const nearestUrgent = branches.find(b => b.status === 'urgencias');
-    if (nearestUrgent) {
-      setSelectedBranch(nearestUrgent);
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(position => {
+        const userLat = position.coords.latitude;
+        const userLng = position.coords.longitude;
+        
+        let nearestBranch: Branch | null = null;
+        let minDistance = Infinity;
+
+        const openBranches = branches.filter(b => b.status === 'activa' || b.status === 'urgencias');
+
+        openBranches.forEach(branch => {
+          const lat1 = userLat;
+          const lon1 = userLng;
+          const lat2 = branch.coordinates.lat;
+          const lon2 = branch.coordinates.lng;
+          
+          const R = 6371; // Radius of the earth in km
+          const dLat = (lat2 - lat1) * Math.PI / 180;
+          const dLon = (lon2 - lon1) * Math.PI / 180;
+          const a = 
+            Math.sin(dLat/2) * Math.sin(dLat/2) +
+            Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
+            Math.sin(dLon/2) * Math.sin(dLon/2); 
+          const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+          const distance = R * c; // Distance in km
+
+          if (distance < minDistance) {
+            minDistance = distance;
+            nearestBranch = branch;
+          }
+        });
+
+        if (nearestBranch) {
+          setSelectedBranch(nearestBranch);
+        }
+      });
+    } else {
+      // Fallback for when geolocation is not available
+      const nearestUrgent = branches.find(b => b.status === 'urgencias');
+      if (nearestUrgent) {
+        setSelectedBranch(nearestUrgent);
+      }
     }
   };
+
 
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -72,7 +113,7 @@ export default function NaserApp({ branches }: { branches: Branch[] }) {
             </Select>
              <Button onClick={handleLocateNearest} variant="secondary" className="hidden md:flex">
               <LocateIcon className="mr-2 h-4 w-4" />
-              Sucursal más cercana
+              Ubicar más cercana
             </Button>
           </div>
         </div>
@@ -80,7 +121,7 @@ export default function NaserApp({ branches }: { branches: Branch[] }) {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2">
-            <InteractiveMap
+            <InteractiveMap 
               branches={filteredBranches}
               selectedBranch={selectedBranch}
               onMarkerSelect={setSelectedBranch}
