@@ -2,12 +2,12 @@
 "use client";
 
 import { useEffect } from 'react';
-import { MapContainer, TileLayer, useMap, Marker, Popup } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
 import type { Branch } from '@/lib/types';
-import { Button } from '@/components/ui/button';
+import { Button } from './ui/button';
 import { Navigation } from 'lucide-react';
 
 // --- Icon Creation Logic ---
@@ -39,6 +39,7 @@ const getDirections = (branch: Branch) => {
 // --- Map Effect for flying to selected branch ---
 function MapEffect({ selectedBranch }: { selectedBranch: Branch | null }) {
   const map = useMap();
+
   useEffect(() => {
     if (selectedBranch) {
       map.flyTo([selectedBranch.coordinates.lat, selectedBranch.coordinates.lng], 14, {
@@ -51,14 +52,13 @@ function MapEffect({ selectedBranch }: { selectedBranch: Branch | null }) {
   return null;
 }
 
-// --- Main Map Component ---
-interface MapContainerWrapperProps {
+interface MapWrapperProps {
   branches: Branch[];
   selectedBranch: Branch | null;
   onMarkerSelect: (branch: Branch) => void;
 }
 
-export default function MapContainerWrapper({ branches = [], selectedBranch, onMarkerSelect }: MapContainerWrapperProps) {
+export default function MapContainerWrapper({ branches = [], selectedBranch, onMarkerSelect }: MapWrapperProps) {
     const initialPosition: [number, number] = [23.6345, -102.5528];
     const initialZoom = 5;
 
@@ -73,7 +73,9 @@ export default function MapContainerWrapper({ branches = [], selectedBranch, onM
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
                 url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
             />
+            
             <MapEffect selectedBranch={selectedBranch} />
+
             {branches.map(branch => {
                 const isSelected = selectedBranch?.id === branch.id;
                 const isEmergency = branch.status === 'urgencias';
@@ -85,25 +87,25 @@ export default function MapContainerWrapper({ branches = [], selectedBranch, onM
                 }
 
                 return (
-                  <Marker
+                <Marker
                     key={branch.id}
                     position={[branch.coordinates.lat, branch.coordinates.lng]}
                     icon={icon}
                     eventHandlers={{
-                      click: () => onMarkerSelect(branch),
+                    click: () => onMarkerSelect(branch),
                     }}
-                  >
+                >
                     <Popup autoPan={false}>
-                      <div className="p-1 space-y-2">
-                          <h4 className="font-bold text-slate-800">{branch.name}</h4>
-                          <p className="text-xs text-slate-600">{branch.address}</p>
-                          <Button size="sm" className="w-full" onClick={() => getDirections(branch)}>
-                              <Navigation className="mr-2 h-4 w-4"/>
-                              Cómo llegar
-                          </Button>
-                      </div>
+                    <div className="p-1 space-y-2">
+                        <h4 className="font-bold text-slate-800">{branch.name}</h4>
+                        <p className="text-xs text-slate-600">{branch.address}</p>
+                        <Button size="sm" className="w-full" onClick={() => getDirections(branch)}>
+                            <Navigation className="mr-2 h-4 w-4"/>
+                            Cómo llegar
+                        </Button>
+                    </div>
                     </Popup>
-                  </Marker>
+                </Marker>
                 );
             })}
         </MapContainer>

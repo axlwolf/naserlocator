@@ -14,6 +14,7 @@ import { Skeleton } from './ui/skeleton';
 import BranchCard from './branch-card';
 import { LocateIcon, X } from 'lucide-react';
 
+// --- Dynamic Map Import ---
 const Map = dynamic(
   () => import('@/components/map-container-wrapper'),
   { 
@@ -21,6 +22,7 @@ const Map = dynamic(
     loading: () => <Skeleton className="h-[600px] w-full rounded-lg" />
   }
 );
+
 
 // --- Componente Principal de la Aplicación ---
 export default function NaserApp({ branches }: { branches: Branch[] }) {
@@ -124,7 +126,7 @@ export default function NaserApp({ branches }: { branches: Branch[] }) {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2">
-          <Map
+          <Map 
             branches={filteredBranches}
             selectedBranch={selectedBranch}
             onMarkerSelect={setSelectedBranch}
