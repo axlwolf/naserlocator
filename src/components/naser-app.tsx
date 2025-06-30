@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useMemo } from 'react';
@@ -10,14 +11,6 @@ import { LocateIcon, X } from 'lucide-react';
 import BranchCard from './branch-card';
 import { Skeleton } from './ui/skeleton';
 import dynamic from 'next/dynamic';
-
-const InteractiveMap = dynamic(
-  () => import('@/components/map-container-wrapper'),
-  {
-    ssr: false,
-    loading: () => <Skeleton className="h-[600px] w-full rounded-lg" />,
-  }
-);
 
 interface NaserAppProps {
   branches: Branch[];
@@ -45,6 +38,14 @@ export default function NaserApp({ branches }: NaserAppProps) {
       setSelectedBranch(nearestUrgent);
     }
   };
+
+  const InteractiveMap = useMemo(() => dynamic(
+    () => import('@/components/map-container-wrapper'),
+    { 
+      ssr: false,
+      loading: () => <Skeleton className="h-[600px] w-full rounded-lg" />
+    }
+  ), []);
 
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
