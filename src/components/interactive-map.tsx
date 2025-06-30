@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect } from 'react';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
-import L, { type Map } from 'leaflet';
+import { useEffect } from 'react';
+import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
+import L from 'leaflet';
 import type { Branch } from '@/lib/types';
 import { Button } from './ui/button';
 import { Navigation } from 'lucide-react';
@@ -33,20 +33,22 @@ const defaultIcon = createIcon("#94a3b8"); // muted-foreground
 const selectedIcon = createIcon("#D4AF37", 40); // primary
 const emergencyIcon = createIcon("#f87171", 40, true); // a reddish color
 
-export default function InteractiveMap({ branches, selectedBranch, onMarkerSelect }: InteractiveMapProps) {
-  const [map, setMap] = useState<Map | null>(null);
-
-  const initialPosition: [number, number] = [23.6345, -102.5528]; // Centered on Mexico
-  const initialZoom = 5;
-
+function MapUpdater({ selectedBranch }: { selectedBranch: Branch | null }) {
+  const map = useMap();
   useEffect(() => {
-    if (map && selectedBranch) {
+    if (selectedBranch) {
       map.flyTo([selectedBranch.coordinates.lat, selectedBranch.coordinates.lng], 14, {
         animate: true,
         duration: 1.5,
       });
     }
-  }, [map, selectedBranch]);
+  }, [selectedBranch, map]);
+  return null;
+}
+
+export default function InteractiveMap({ branches, selectedBranch, onMarkerSelect }: InteractiveMapProps) {
+  const initialPosition: [number, number] = [23.6345, -102.5528]; // Centered on Mexico
+  const initialZoom = 5;
   
   const getDirections = (branch: Branch) => {
     window.open(`https://www.google.com/maps/dir/?api=1&destination=${branch.coordinates.lat},${branch.coordinates.lng}`, '_blank');
@@ -54,7 +56,6 @@ export default function InteractiveMap({ branches, selectedBranch, onMarkerSelec
 
   return (
     <MapContainer 
-        ref={setMap}
         center={initialPosition} 
         zoom={initialZoom} 
         scrollWheelZoom={true} 
@@ -98,6 +99,7 @@ export default function InteractiveMap({ branches, selectedBranch, onMarkerSelec
                 </Marker>
             )
         })}
+        <MapUpdater selectedBranch={selectedBranch} />
     </MapContainer>
   );
 }
