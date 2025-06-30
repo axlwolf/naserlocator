@@ -1,4 +1,5 @@
-import type { Branch } from './types';
+
+import type { Branch, BranchStatus, Service } from './types';
 
 export const branches: Branch[] = [
   {
@@ -90,3 +91,5 @@ export const branches: Branch[] = [
 ];
 
 export const allServices: Service[] = ["Velación", "Cremación", "Traslados", "Embalsamamiento", "Capillas", "Gestoría"];
+
+export const allStatuses: BranchStatus[] = ["activa", "inactiva", "proxima", "urgencias"];

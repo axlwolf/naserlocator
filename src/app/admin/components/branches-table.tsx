@@ -1,3 +1,4 @@
+
 "use client"
 
 import * as React from "react"
@@ -32,7 +33,13 @@ const statusStyles: Record<BranchStatus, string> = {
     urgencias: 'bg-red-500/20 text-red-400 border-red-500/30',
 }
 
-export function BranchesTable({ data }: { data: Branch[] }) {
+interface BranchesTableProps {
+    data: Branch[];
+    onEdit: (branch: Branch) => void;
+    onDelete: (branch: Branch) => void;
+}
+
+export function BranchesTable({ data, onEdit, onDelete }: BranchesTableProps) {
   const [filter, setFilter] = React.useState("")
   const filteredData = data.filter(branch => 
     branch.name.toLowerCase().includes(filter.toLowerCase()) || 
@@ -87,14 +94,21 @@ export function BranchesTable({ data }: { data: Branch[] }) {
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Acciones</DropdownMenuLabel>
+                        <DropdownMenuItem onClick={() => onEdit(branch)}>
+                            Editar
+                        </DropdownMenuItem>
                         <DropdownMenuItem
                           onClick={() => navigator.clipboard.writeText(branch.id)}
                         >
                           Copiar ID
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem>Editar</DropdownMenuItem>
-                        <DropdownMenuItem className="text-destructive focus:text-destructive">Eliminar</DropdownMenuItem>
+                        <DropdownMenuItem 
+                            onClick={() => onDelete(branch)}
+                            className="text-destructive focus:bg-destructive/10 focus:text-destructive"
+                        >
+                            Eliminar
+                        </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </TableCell>
