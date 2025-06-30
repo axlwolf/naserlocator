@@ -1,10 +1,9 @@
 "use client";
 
-import { useEffect } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-
+import { useEffect } from 'react';
 import type { Branch } from '@/lib/types';
 import { Button } from './ui/button';
 import { Navigation } from 'lucide-react';
@@ -29,13 +28,13 @@ const defaultIcon = createIcon("#94a3b8");
 const selectedIcon = createIcon("#D4AF37", 40);
 const emergencyIcon = createIcon("#f87171", 40, true);
 
-interface MapFeaturesProps {
-  branches: Branch[];
-  selectedBranch: Branch | null;
-  onMarkerSelect: (branch: Branch) => void;
+interface MapControllerProps {
+    branches: Branch[];
+    selectedBranch: Branch | null;
+    onMarkerSelect: (branch: Branch) => void;
 }
 
-function MapUpdater({ branches, selectedBranch, onMarkerSelect }: MapFeaturesProps) {
+function MapFeatures({ branches, selectedBranch, onMarkerSelect }: MapControllerProps) {
   const map = useMap();
 
   useEffect(() => {
@@ -79,7 +78,7 @@ function MapUpdater({ branches, selectedBranch, onMarkerSelect }: MapFeaturesPro
                        <h4 className="font-bold">{branch.name}</h4>
                        <p className="text-xs text-muted-foreground">{branch.address}</p>
                        <Button size="sm" className="w-full" onClick={() => getDirections(branch)}>
-                            <Navigation className="mr-2"/>
+                            <Navigation className="mr-2 h-4 w-4"/>
                             Cómo llegar
                        </Button>
                     </div>
@@ -91,7 +90,7 @@ function MapUpdater({ branches, selectedBranch, onMarkerSelect }: MapFeaturesPro
   );
 }
 
-export default function InteractiveMap({ branches, selectedBranch, onMarkerSelect }: MapFeaturesProps) {
+export default function InteractiveMap({ branches, selectedBranch, onMarkerSelect }: MapControllerProps) {
   const initialPosition: [number, number] = [23.6345, -102.5528];
   const initialZoom = 5;
 
@@ -106,10 +105,10 @@ export default function InteractiveMap({ branches, selectedBranch, onMarkerSelec
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
             url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
         />
-        <MapUpdater 
-            branches={branches} 
-            selectedBranch={selectedBranch} 
-            onMarkerSelect={onMarkerSelect} 
+        <MapFeatures 
+            branches={branches}
+            selectedBranch={selectedBranch}
+            onMarkerSelect={onMarkerSelect}
         />
     </MapContainer>
   );

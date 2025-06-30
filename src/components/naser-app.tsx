@@ -12,10 +12,6 @@ import BranchCard from './branch-card';
 import { Skeleton } from './ui/skeleton';
 import dynamic from 'next/dynamic';
 
-interface NaserAppProps {
-  branches: Branch[];
-}
-
 const InteractiveMap = dynamic(
   () => import('@/components/map-container-wrapper'),
   { 
@@ -24,7 +20,8 @@ const InteractiveMap = dynamic(
   }
 );
 
-export default function NaserApp({ branches }: NaserAppProps) {
+
+export default function NaserApp({ branches }: { branches: Branch[] }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedService, setSelectedService] = useState<Service | 'all'>('all');
   const [selectedBranch, setSelectedBranch] = useState<Branch | null>(branches.find(b => b.status === 'urgencias') || branches[0] || null);
@@ -82,7 +79,7 @@ export default function NaserApp({ branches }: NaserAppProps) {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2">
-            <InteractiveMap 
+            <InteractiveMap
               branches={filteredBranches}
               selectedBranch={selectedBranch}
               onMarkerSelect={setSelectedBranch}
