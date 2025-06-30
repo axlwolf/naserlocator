@@ -1,6 +1,6 @@
 import Header from "@/components/header";
-import NaserApp from "@/components/naser-app";
 import { branches } from "@/lib/data";
+import NaserApp from '@/components/naser-app';
 
 export default function Home() {
   return (

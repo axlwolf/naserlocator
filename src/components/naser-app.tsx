@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useMemo } from 'react';
-import dynamic from 'next/dynamic';
 import type { Branch, Service } from '@/lib/types';
 import { allServices } from '@/lib/data';
 import { Input } from './ui/input';
@@ -10,8 +9,9 @@ import { Button } from './ui/button';
 import { LocateIcon, X } from 'lucide-react';
 import BranchCard from './branch-card';
 import { Skeleton } from './ui/skeleton';
+import dynamic from 'next/dynamic';
 
-const InteractiveMap = dynamic(() => import('./interactive-map'), {
+const InteractiveMap = dynamic(() => import('@/components/interactive-map'), {
   ssr: false,
   loading: () => <Skeleton className="h-[600px] w-full rounded-lg" />,
 });
