@@ -1,7 +1,6 @@
-
 "use client";
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import type { Branch, Service } from '@/lib/types';
 import { allServices } from '@/lib/data';
 import { Input } from './ui/input';
@@ -12,6 +11,14 @@ import BranchCard from './branch-card';
 import { Skeleton } from './ui/skeleton';
 import dynamic from 'next/dynamic';
 
+const InteractiveMap = dynamic(
+  () => import('@/components/interactive-map'),
+  {
+    ssr: false,
+    loading: () => <Skeleton className="h-[600px] w-full rounded-lg" />,
+  }
+);
+
 interface NaserAppProps {
   branches: Branch[];
 }
@@ -20,14 +27,6 @@ export default function NaserApp({ branches }: NaserAppProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedService, setSelectedService] = useState<Service | 'all'>('all');
   const [selectedBranch, setSelectedBranch] = useState<Branch | null>(branches.find(b => b.status === 'urgencias') || branches[0] || null);
-  
-  const InteractiveMap = useMemo(() => dynamic(
-    () => import('@/components/interactive-map'),
-    {
-      ssr: false,
-      loading: () => <Skeleton className="h-[600px] w-full rounded-lg" />,
-    }
-  ), []);
 
   const filteredBranches = useMemo(() => {
     return branches.filter(branch => {
@@ -82,7 +81,7 @@ export default function NaserApp({ branches }: NaserAppProps) {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2">
-            <InteractiveMap 
+            <InteractiveMap
               branches={filteredBranches}
               selectedBranch={selectedBranch}
               onMarkerSelect={setSelectedBranch}
