@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useEffect } from 'react';
@@ -7,8 +6,6 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
 import type { Branch } from '@/lib/types';
-import { Button } from './ui/button';
-import { Navigation } from 'lucide-react';
 
 // --- Icon Creation Logic ---
 const createIcon = (color: string, size: number = 32, pulse: boolean = false) => {
@@ -31,42 +28,36 @@ const defaultIcon = createIcon("#94a3b8");
 const selectedIcon = createIcon("#D4AF37", 40);
 const emergencyIcon = createIcon("#f87171", 40, true);
 
-// --- Helper Functions ---
-const getDirections = (branch: Branch) => {
-  window.open(`https://www.google.com/maps/dir/?api=1&destination=${branch.coordinates.lat},${branch.coordinates.lng}`, '_blank');
+// --- Map Effect Component ---
+// This component uses the useMap hook to control the map instance.
+const MapEffect = ({ selectedBranch }: { selectedBranch: Branch | null }) => {
+    const map = useMap();
+    useEffect(() => {
+        if (selectedBranch) {
+            map.flyTo([selectedBranch.coordinates.lat, selectedBranch.coordinates.lng], 14, {
+                animate: true,
+                duration: 1.5,
+            });
+        }
+    }, [selectedBranch, map]);
+    return null; // This component does not render anything itself
 };
 
-// --- Map Effect for flying to selected branch ---
-function MapEffect({ selectedBranch }: { selectedBranch: Branch | null }) {
-  const map = useMap();
-
-  useEffect(() => {
-    if (selectedBranch) {
-      map.flyTo([selectedBranch.coordinates.lat, selectedBranch.coordinates.lng], 14, {
-        animate: true,
-        duration: 1.5,
-      });
-    }
-  }, [selectedBranch, map]);
-
-  return null;
+interface MapContainerWrapperProps {
+    branches: Branch[];
+    selectedBranch: Branch | null;
+    onMarkerSelect: (branch: Branch) => void;
 }
 
-interface MapWrapperProps {
-  branches: Branch[];
-  selectedBranch: Branch | null;
-  onMarkerSelect: (branch: Branch) => void;
-}
-
-export default function MapContainerWrapper({ branches = [], selectedBranch, onMarkerSelect }: MapWrapperProps) {
+export default function MapContainerWrapper({ branches, selectedBranch, onMarkerSelect }: MapContainerWrapperProps) {
     const initialPosition: [number, number] = [23.6345, -102.5528];
     const initialZoom = 5;
 
     return (
-        <MapContainer 
-            center={initialPosition} 
-            zoom={initialZoom} 
-            scrollWheelZoom={true} 
+        <MapContainer
+            center={initialPosition}
+            zoom={initialZoom}
+            scrollWheelZoom={true}
             className="h-[600px] w-full rounded-lg z-0"
         >
             <TileLayer
@@ -87,25 +78,28 @@ export default function MapContainerWrapper({ branches = [], selectedBranch, onM
                 }
 
                 return (
-                <Marker
-                    key={branch.id}
-                    position={[branch.coordinates.lat, branch.coordinates.lng]}
-                    icon={icon}
-                    eventHandlers={{
-                    click: () => onMarkerSelect(branch),
-                    }}
-                >
-                    <Popup autoPan={false}>
-                    <div className="p-1 space-y-2">
-                        <h4 className="font-bold text-slate-800">{branch.name}</h4>
-                        <p className="text-xs text-slate-600">{branch.address}</p>
-                        <Button size="sm" className="w-full" onClick={() => getDirections(branch)}>
-                            <Navigation className="mr-2 h-4 w-4"/>
-                            Cómo llegar
-                        </Button>
-                    </div>
-                    </Popup>
-                </Marker>
+                    <Marker
+                        key={branch.id}
+                        position={[branch.coordinates.lat, branch.coordinates.lng]}
+                        icon={icon}
+                        eventHandlers={{
+                            click: () => onMarkerSelect(branch),
+                        }}
+                    >
+                        <Popup>
+                            <div className="p-1 space-y-2">
+                                <h4 className="font-bold text-slate-800">{branch.name}</h4>
+                                <p className="text-xs text-slate-600">{branch.address}</p>
+                                <button
+                                    className="leaflet-popup-button"
+                                    onClick={() => window.open(`https://www.google.com/maps/dir/?api=1&destination=${branch.coordinates.lat},${branch.coordinates.lng}`, '_blank')}
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="lucide lucide-navigation mr-2 h-4 w-4"><polygon points="3 11 22 2 13 21 11 13 3 11"></polygon></svg>
+                                    Cómo llegar
+                                </button>
+                            </div>
+                        </Popup>
+                    </Marker>
                 );
             })}
         </MapContainer>

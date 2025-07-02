@@ -14,8 +14,10 @@ import { Skeleton } from './ui/skeleton';
 import BranchCard from './branch-card';
 import { LocateIcon, X } from 'lucide-react';
 
-// --- Dynamic Map Import ---
-const Map = dynamic(
+// --- Dynamic Import of the Map Component ---
+// This ensures that the map component (and all its leaflet dependencies)
+// is only loaded on the client side.
+const MapContainerWrapper = dynamic(
   () => import('@/components/map-container-wrapper'),
   { 
     ssr: false,
@@ -24,13 +26,13 @@ const Map = dynamic(
 );
 
 
-// --- Componente Principal de la Aplicación ---
+// --- Main Application Component ---
 export default function NaserApp({ branches }: { branches: Branch[] }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedService, setSelectedService] = useState<Service | 'all'>('all');
   const [selectedBranch, setSelectedBranch] = useState<Branch | null>(null);
 
-  // Set initial branch on client side to avoid hydration issues
+  // Set initial branch on the client side to avoid hydration issues.
   useEffect(() => {
     setSelectedBranch(branches.find(b => b.status === 'urgencias') || branches[0] || null);
   }, [branches]);
@@ -62,7 +64,7 @@ export default function NaserApp({ branches }: { branches: Branch[] }) {
           const lat2 = branch.coordinates.lat;
           const lon2 = branch.coordinates.lng;
           
-          const R = 6371; // Radius of the earth in km
+          const R = 6371; // Earth radius in km
           const dLat = (lat2 - lat1) * Math.PI / 180;
           const dLon = (lon2 - lon1) * Math.PI / 180;
           const a = 
@@ -83,6 +85,7 @@ export default function NaserApp({ branches }: { branches: Branch[] }) {
         }
       });
     } else {
+      // Fallback if geolocation is not available
       const nearestUrgent = branches.find(b => b.status === 'urgencias');
       if (nearestUrgent) {
         setSelectedBranch(nearestUrgent);
@@ -125,11 +128,12 @@ export default function NaserApp({ branches }: { branches: Branch[] }) {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2">
-          <Map 
-            branches={filteredBranches}
-            selectedBranch={selectedBranch}
-            onMarkerSelect={setSelectedBranch}
-          />
+            {/* The Map component is rendered here. It receives all necessary data as props. */}
+            <MapContainerWrapper
+                branches={filteredBranches}
+                selectedBranch={selectedBranch}
+                onMarkerSelect={setSelectedBranch}
+            />
         </div>
         <div className="lg:col-span-1 h-[600px] overflow-y-auto pr-2 space-y-4">
             <h3 className="text-2xl font-semibold text-foreground">
