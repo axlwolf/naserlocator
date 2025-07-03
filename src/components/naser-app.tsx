@@ -43,6 +43,8 @@ export default function NaserApp({ branches }: { branches: Branch[] }) {
 
   const handleStateClick = (stateName: string | null) => {
     setSelectedState(stateName);
+    setSearchTerm('');
+    setSelectedService('all');
     const firstBranchInState = branches.find(b => b.state === stateName);
     setSelectedBranch(firstBranchInState || null);
   }
