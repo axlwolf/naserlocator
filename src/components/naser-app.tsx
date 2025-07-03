@@ -2,6 +2,7 @@
 "use client";
 
 import { useState, useMemo, useEffect } from 'react';
+import dynamic from 'next/dynamic';
 
 import type { Branch, Service } from '@/lib/types';
 import { allServices } from '@/lib/data';
@@ -10,8 +11,9 @@ import { Input } from './ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 import { Button } from './ui/button';
 import BranchCard from './branch-card';
-import MexicoMap from './mexico-map'; 
 import { LocateIcon, X } from 'lucide-react';
+
+const MexicoMap = dynamic(() => import('./mexico-map'), { ssr: false });
 
 export default function NaserApp({ branches }: { branches: Branch[] }) {
   const [searchTerm, setSearchTerm] = useState('');
@@ -45,8 +47,14 @@ export default function NaserApp({ branches }: { branches: Branch[] }) {
     setSelectedState(stateName);
     setSearchTerm('');
     setSelectedService('all');
-    const firstBranchInState = branches.find(b => b.state === stateName);
-    setSelectedBranch(firstBranchInState || null);
+    
+    if (stateName) {
+      const firstBranchInState = branches.find(b => b.state === stateName);
+      setSelectedBranch(firstBranchInState || null);
+    } else {
+      const firstUrgent = branches.find(b => b.status === 'urgencias');
+      setSelectedBranch(firstUrgent || branches[0] || null);
+    }
   }
 
   const handleLocateNearest = () => {
@@ -102,8 +110,7 @@ export default function NaserApp({ branches }: { branches: Branch[] }) {
   }
 
   const clearStateSelection = () => {
-    setSelectedState(null);
-    setSelectedBranch(branches.find(b => b.status === 'urgencias') || branches[0] || null);
+    handleStateClick(null);
   }
 
   return (
@@ -144,7 +151,7 @@ export default function NaserApp({ branches }: { branches: Branch[] }) {
             <div className="bg-card/50 p-2 rounded-lg border">
                 <MexicoMap 
                     branches={branches}
-                    selectedBranch={selectedBranch}
+                    selectedState={selectedState}
                     onStateClick={handleStateClick}
                 />
             </div>

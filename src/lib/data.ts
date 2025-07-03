@@ -827,42 +827,42 @@ const rawData = {
           {
             "nombre": "Agencia Funeraria Naser Oaxaca",
             "direccion": "Calz. Héroes de Chapultepec #1125, Col. Reforma",
-            "telefono": "951 518-73-35"
+            "telefono": "951-518-73-35"
           }
         ],
         "pochutla": [
           {
             "nombre": "Agencia Funeraria Naser Oaxaca",
             "direccion": "Calz. Héroes de Chapultepec #1125, Col. Reforma",
-            "telefono": "951 518-73-35"
+            "telefono": "951-518-73-35"
           }
         ],
         "puerto_escondido": [
           {
             "nombre": "Agencia Funeraria Naser Oaxaca",
             "direccion": "Calz. Héroes de Chapultepec #1125, Col. Reforma",
-            "telefono": "951 518-73-35"
+            "telefono": "951-518-73-35"
           }
         ],
         "rio_grande": [
           {
             "nombre": "Agencia Funeraria Naser Oaxaca",
             "direccion": "Calz. Héroes de Chapultepec #1125, Col. Reforma",
-            "telefono": "951 518-73-35"
+            "telefono": "951-518-73-35"
           }
         ],
         "santos_reyes_nopala": [
           {
             "nombre": "Agencia Funeraria Naser Oaxaca",
             "direccion": "Calz. Héroes de Chapultepec #1125, Col. Reforma",
-            "telefono": "951 518-73-35"
+            "telefono": "951-518-73-35"
           }
         ],
         "san_gabriel_mixtepec": [
           {
             "nombre": "Agencia Funeraria Naser Oaxaca",
             "direccion": "Calz. Héroes de Chapultepec #1125, Col. Reforma",
-            "telefono": "951 518-73-35"
+            "telefono": "951-518-73-35"
           }
         ]
       }
@@ -1216,109 +1216,193 @@ const rawData = {
         ]
       }
     }
+  },
+  "empresas_relacionadas": [
+    {
+      "nombre": "Naser Group Inc.",
+      "pais": "Estados Unidos",
+      "descripcion": "Empresa en Estados Unidos de Norteamérica"
+    },
+    {
+      "nombre": "Naser Latin Network, LLC",
+      "pais": "Estados Unidos",
+      "descripcion": "Empresa en Estados Unidos de Norteamérica que suple las necesidades de clientes con máxima eficiencia y seguridad"
+    },
+    {
+      "nombre": "Rucsa Hornos Crematorios",
+      "pais": "México",
+      "descripcion": "Empresa especializada en hornos crematorios"
+    },
+    {
+      "nombre": "Naser Travel",
+      "pais": "México",
+      "descripcion": "Agencia de viajes minorista consolidada como empresa confiable y segura"
+    },
+    {
+      "nombre": "Pets in the Sky",
+      "pais": "México",
+      "descripcion": "Servicios funerarios para mascotas con hornos crematorios"
+    }
+  ],
+  "servicios_especiales": [
+    "Convenio con ISSSTE",
+    "Servicios funerarios para trabajadores y jubilados",
+    "Previsión funeraria a futuro",
+    "Cobertura nacional e internacional",
+    "Traslados y repatriación",
+    "Servicios funerarios para mascotas",
+    "Cremación"
+  ],
+  "oficinas_internacionales": [
+    {
+      "ciudad": "Miami",
+      "estado": "Florida",
+      "pais": "Estados Unidos",
+      "año_apertura": "2008"
+    }
+  ],
+  "proyectos_especiales": [
+    {
+      "nombre": "Primer Cementerio Inteligente en México",
+      "ubicacion": "Naser Memorial Cuernavaca",
+      "año": "2013"
+    }
+  ],
+  "historia_expansion": {
+    "1989": "Fundación de Grupo Naser en México, D.F.",
+    "1995": "Convenio con los estados de México y Morelos",
+    "2001": "Apertura de la Agencia Funeraria Naser Aragón, México, D.F.",
+    "2002": "Apertura de Oficina Regional Sur Oaxaca de Juárez, Oax.",
+    "2003": "Apertura de la Agencia Funeraria Naser Morelos, Cuernavaca, Mor.",
+    "2005": "Apertura de Oficina Regional del Bajío, Aguascalientes, Ags.",
+    "2008": "Apertura de Oficina Internacional en Miami Fl. EUA",
+    "2013": "Presentación del proyecto Primer Cementerio Inteligente en México"
+  },
+  "estadisticas_cobertura": {
+    "total_estados": 32,
+    "total_ciudades": 145,
+    "agencias_propias": 4,
+    "funerarias_afiliadas": 141,
+    "cobertura_nacional": true,
+    "cobertura_internacional": true
   }
 };
 
-const slugify = (text: string) => text.toLowerCase().replace(/[^a-z0-9 -]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-');
-
-const stateNameMap: Record<string, string> = {
-    "aguascalientes": "Aguascalientes",
-    "baja_california_norte": "Baja California",
-    "baja_california_sur": "Baja California Sur",
-    "campeche": "Campeche",
-    "cdmx": "CDMX",
-    "chiapas": "Chiapas",
-    "chihuahua": "Chihuahua",
-    "coahuila": "Coahuila",
-    "colima": "Colima",
-    "durango": "Durango",
-    "estado_de_mexico": "México",
-    "guanajuato": "Guanajuato",
-    "guerrero": "Guerrero",
-    "hidalgo": "Hidalgo",
-    "jalisco": "Jalisco",
-    "michoacan": "Michoacán",
-    "morelos": "Morelos",
-    "nayarit": "Nayarit",
-    "nuevo_leon": "Nuevo León",
-    "oaxaca": "Oaxaca",
-    "puebla": "Puebla",
-    "queretaro": "Querétaro",
-    "quintana_roo": "Quintana Roo",
-    "san_luis_potosi": "San Luis Potosí",
-    "sinaloa": "Sinaloa",
-    "sonora": "Sonora",
-    "tabasco": "Tabasco",
-    "tamaulipas": "Tamaulipas",
-    "tlaxcala": "Tlaxcala",
-    "veracruz": "Veracruz",
-    "yucatan": "Yucatán",
-    "zacatecas": "Zacatecas"
+const stateNameMap: { [key: string]: string } = {
+  'aguascalientes': 'Aguascalientes',
+  'baja_california_norte': 'Baja California',
+  'baja_california_sur': 'Baja California Sur',
+  'campeche': 'Campeche',
+  'chiapas': 'Chiapas',
+  'chihuahua': 'Chihuahua',
+  'coahuila': 'Coahuila',
+  'colima': 'Colima',
+  'cdmx': 'CDMX',
+  'durango': 'Durango',
+  'guanajuato': 'Guanajuato',
+  'guerrero': 'Guerrero',
+  'hidalgo': 'Hidalgo',
+  'jalisco': 'Jalisco',
+  'estado_de_mexico': 'México',
+  'michoacan': 'Michoacán',
+  'morelos': 'Morelos',
+  'nayarit': 'Nayarit',
+  'nuevo_leon': 'Nuevo León',
+  'oaxaca': 'Oaxaca',
+  'puebla': 'Puebla',
+  'queretaro': 'Querétaro',
+  'quintana_roo': 'Quintana Roo',
+  'san_luis_potosi': 'San Luis Potosí',
+  'sinaloa': 'Sinaloa',
+  'sonora': 'Sonora',
+  'tabasco': 'Tabasco',
+  'tamaulipas': 'Tamaulipas',
+  'tlaxcala': 'Tlaxcala',
+  'veracruz': 'Veracruz',
+  'yucatan': 'Yucatán',
+  'zacatecas': 'Zacatecas',
 };
 
-const allServicesSet = new Set<Service>();
-const processedBranches: Branch[] = [];
+const getFirstPhone = (phones: string | string[] | undefined): string => {
+    if (!phones) return 'Consultar horarios';
+    if (Array.isArray(phones)) return phones[0];
+    return phones;
+};
 
-// Process "agencias_propias"
-rawData.agencias_propias.forEach(agencia => {
-    const cityState = agencia.ciudad.split(',').map(s => s.trim());
-    const city = cityState[0];
-    const state = cityState.length > 1 ? cityState[1] : 'CDMX';
-    const phone = Array.isArray(agencia.telefonos) ? agencia.telefonos[0] : agencia.telefono || 'No disponible';
-    
-    (agencia.servicios || []).forEach(service => allServicesSet.add(service));
+const processBranches = () => {
+    const branchesData: Branch[] = [];
+    let idCounter = 1;
 
-    processedBranches.push({
-        id: slugify(`${agencia.nombre} ${city}`),
-        name: agencia.nombre,
-        address: agencia.direccion,
-        city: city,
-        state: state,
-        coordinates: { lat: 23.6345, lng: -102.5528 }, // Placeholder coordinates
-        phone: phone,
-        schedule: 'Consultar horarios',
-        services: agencia.servicios || [],
-        status: 'activa',
-        imageUrl: 'https://placehold.co/600x400.png',
-        manager: 'N/A'
+    rawData.agencias_propias.forEach(agency => {
+        let stateName = "CDMX";
+        const cityParts = agency.ciudad.split(', ');
+        const city = cityParts[0];
+        if (cityParts.length > 1) {
+            stateName = cityParts[1];
+        } else {
+             const stateMatch = Object.entries(stateNameMap).find(([key, name]) => agency.ciudad.toLowerCase().includes(name.toLowerCase()));
+             if (stateMatch) stateName = stateMatch[1];
+        }
+
+        branchesData.push({
+            id: `propia-${idCounter++}`,
+            name: agency.nombre,
+            address: agency.direccion,
+            city: city,
+            state: stateName,
+            coordinates: { lat: 23.6345, lng: -102.5528 }, 
+            phone: getFirstPhone(agency.telefonos || agency.telefono),
+            schedule: 'Consultar horarios',
+            services: agency.servicios || [],
+            status: 'activa',
+            imageUrl: 'https://placehold.co/600x400.png',
+            manager: 'N/A',
+        });
     });
-});
 
-// Process "cobertura_estados"
-for (const stateKey in rawData.cobertura_estados) {
-    const stateData = (rawData.cobertura_estados as any)[stateKey];
-    const stateName = stateNameMap[stateKey];
+    for (const stateKey in rawData.cobertura_estados) {
+        const stateData = rawData.cobertura_estados[stateKey as keyof typeof rawData.cobertura_estados];
+        const stateName = stateNameMap[stateKey] || stateKey;
 
-    if (stateData.ciudades) {
         for (const cityKey in stateData.ciudades) {
-            const cityAgencies = stateData.ciudades[cityKey];
-            if (Array.isArray(cityAgencies)) {
-                cityAgencies.forEach((agencia: any) => {
-                    const phone = Array.isArray(agencia.telefonos) ? agencia.telefonos[0] : agencia.telefono || 'No disponible';
-                    processedBranches.push({
-                        id: slugify(`${agencia.nombre} ${cityKey}`),
-                        name: agencia.nombre,
-                        address: agencia.direccion || 'No disponible',
-                        city: cityKey.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' '),
-                        state: stateName,
-                        coordinates: { lat: 23.6345, lng: -102.5528 }, // Placeholder coordinates
-                        phone: phone,
-                        schedule: 'Consultar horarios',
-                        services: agencia.tipo_servicio ? [agencia.tipo_servicio] : [],
-                        status: 'activa',
-                        imageUrl: 'https://placehold.co/600x400.png',
-                        manager: 'Afiliado'
-                    });
+            const cityData = stateData.ciudades[cityKey as keyof typeof stateData.ciudades];
+            const cityName = cityKey.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+
+            cityData.forEach(branch => {
+                 branchesData.push({
+                    id: `afiliada-${idCounter++}`,
+                    name: branch.nombre,
+                    address: branch.direccion || 'Dirección no disponible',
+                    city: cityName,
+                    state: stateName,
+                    coordinates: { lat: 23.6345, lng: -102.5528 },
+                    phone: getFirstPhone(branch.telefonos || branch.telefono),
+                    schedule: 'Consultar horarios',
+                    services: [],
+                    status: 'activa',
+                    imageUrl: 'https://placehold.co/600x400.png',
+                    manager: 'N/A',
                 });
-            }
+            });
         }
     }
-}
+    return branchesData;
+};
 
+export const branches: Branch[] = processBranches();
 
-export const branches: Branch[] = processedBranches;
-
-export const allServices: Service[] = Array.from(allServicesSet).sort();
+export const allServices: Service[] = [
+    "Velación", 
+    "Cremación", 
+    "Traslados",
+    "Embalsamamiento",
+    "Gestoría",
+    "Capillas",
+    "Servicio 24 horas",
+    "Traslados nacionales",
+    "Traslados internacionales",
+    "Acceso para discapacitados"
+].sort();
 
 export const allStatuses: BranchStatus[] = ["activa", "inactiva", "proxima", "urgencias"];
 

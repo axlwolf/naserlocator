@@ -42,20 +42,19 @@ const stateIdToName: { [key: string]: string } = {
 
 interface MexicoMapProps {
   branches: Branch[];
-  selectedBranch: Branch | null;
+  selectedState: string | null;
   onStateClick: (stateName: string | null) => void;
 }
 
-export default function MexicoMap({ branches, selectedBranch, onStateClick }: MexicoMapProps) {
+export default function MexicoMap({ branches, selectedState, onStateClick }: MexicoMapProps) {
     const activeStates = new Set(branches.map(b => b.state));
     const urgentStates = new Set(branches.filter(b => b.status === 'urgencias').map(b => b.state));
-    const selectedStateName = selectedBranch?.state;
 
     const getPathClassName = (stateId: string) => {
         const stateName = stateIdToName[stateId];
         const isActive = activeStates.has(stateName);
         const isUrgent = urgentStates.has(stateName);
-        const isSelected = selectedStateName === stateName;
+        const isSelected = selectedState === stateName;
 
         return cn('stroke-background/60 stroke-[0.5] transition-colors duration-200', {
             'fill-primary': isSelected,
