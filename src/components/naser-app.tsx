@@ -2,7 +2,6 @@
 "use client";
 
 import { useState, useMemo, useEffect } from 'react';
-import dynamic from 'next/dynamic';
 
 import type { Branch, Service } from '@/lib/types';
 import { allServices } from '@/lib/data';
@@ -10,31 +9,25 @@ import { allServices } from '@/lib/data';
 import { Input } from './ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 import { Button } from './ui/button';
-import { Skeleton } from './ui/skeleton';
 import BranchCard from './branch-card';
+import MexicoMap from './mexico-map'; 
 import { LocateIcon, X } from 'lucide-react';
 
-// --- Dynamic Import of the Map Component ---
-// This ensures that the map component (and all its leaflet dependencies)
-// is only loaded on the client side.
-const MapContainerWrapper = dynamic(
-  () => import('@/components/map-container-wrapper'),
-  { 
-    ssr: false,
-    loading: () => <Skeleton className="h-[600px] w-full rounded-lg" />
-  }
-);
-
-
-// --- Main Application Component ---
 export default function NaserApp({ branches }: { branches: Branch[] }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedService, setSelectedService] = useState<Service | 'all'>('all');
   const [selectedBranch, setSelectedBranch] = useState<Branch | null>(null);
+  const [selectedState, setSelectedState] = useState<string | null>(null);
 
-  // Set initial branch on the client side to avoid hydration issues.
   useEffect(() => {
-    setSelectedBranch(branches.find(b => b.status === 'urgencias') || branches[0] || null);
+    const firstUrgent = branches.find(b => b.status === 'urgencias');
+    if (firstUrgent) {
+      setSelectedBranch(firstUrgent);
+      setSelectedState(firstUrgent.state);
+    } else if (branches.length > 0) {
+      setSelectedBranch(branches[0]);
+      setSelectedState(branches[0].state);
+    }
   }, [branches]);
 
   const filteredBranches = useMemo(() => {
@@ -43,9 +36,16 @@ export default function NaserApp({ branches }: { branches: Branch[] }) {
                             branch.address.toLowerCase().includes(searchTerm.toLowerCase()) ||
                             branch.city.toLowerCase().includes(searchTerm.toLowerCase());
       const matchesService = selectedService === 'all' || branch.services.includes(selectedService);
-      return matchesSearch && matchesService;
+      const matchesState = !selectedState || branch.state === selectedState;
+      return matchesSearch && matchesService && matchesState;
     });
-  }, [branches, searchTerm, selectedService]);
+  }, [branches, searchTerm, selectedService, selectedState]);
+
+  const handleStateClick = (stateName: string | null) => {
+    setSelectedState(stateName);
+    const firstBranchInState = branches.find(b => b.state === stateName);
+    setSelectedBranch(firstBranchInState || null);
+  }
 
   const handleLocateNearest = () => {
     if (navigator.geolocation) {
@@ -82,16 +82,27 @@ export default function NaserApp({ branches }: { branches: Branch[] }) {
 
         if (nearestBranch) {
           setSelectedBranch(nearestBranch);
+          setSelectedState(nearestBranch.state);
         }
       });
     } else {
-      // Fallback if geolocation is not available
       const nearestUrgent = branches.find(b => b.status === 'urgencias');
       if (nearestUrgent) {
         setSelectedBranch(nearestUrgent);
+        setSelectedState(nearestUrgent.state);
       }
     }
   };
+
+  const handleSelectBranch = (branch: Branch) => {
+    setSelectedBranch(branch);
+    setSelectedState(branch.state);
+  }
+
+  const clearStateSelection = () => {
+    setSelectedState(null);
+    setSelectedBranch(branches.find(b => b.status === 'urgencias') || branches[0] || null);
+  }
 
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -128,24 +139,33 @@ export default function NaserApp({ branches }: { branches: Branch[] }) {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2">
-            {/* The Map component is rendered here. It receives all necessary data as props. */}
-            <MapContainerWrapper
-                branches={filteredBranches}
-                selectedBranch={selectedBranch}
-                onMarkerSelect={setSelectedBranch}
-            />
+            <div className="bg-card/50 p-2 rounded-lg border">
+                <MexicoMap 
+                    branches={branches}
+                    selectedBranch={selectedBranch}
+                    onStateClick={handleStateClick}
+                />
+            </div>
         </div>
         <div className="lg:col-span-1 h-[600px] overflow-y-auto pr-2 space-y-4">
-            <h3 className="text-2xl font-semibold text-foreground">
-              Sucursales ({filteredBranches.length})
-            </h3>
+            <div className='flex justify-between items-center'>
+                <h3 className="text-2xl font-semibold text-foreground">
+                {selectedState ? `Sucursales en ${selectedState}` : 'Todas las sucursales'} ({filteredBranches.length})
+                </h3>
+                {selectedState && (
+                    <Button variant="ghost" size="sm" onClick={clearStateSelection}>
+                        <X className="mr-2 h-4 w-4" />
+                        Quitar filtro
+                    </Button>
+                )}
+            </div>
             {filteredBranches.length > 0 ? (
                 filteredBranches.map(branch => (
                     <BranchCard 
                         key={branch.id} 
                         branch={branch} 
                         isSelected={selectedBranch?.id === branch.id}
-                        onSelect={() => setSelectedBranch(branch)}
+                        onSelect={() => handleSelectBranch(branch)}
                     />
                 ))
             ) : (
