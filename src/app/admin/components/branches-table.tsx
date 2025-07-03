@@ -26,11 +26,11 @@ import { Badge } from "@/components/ui/badge"
 import type { Branch, BranchStatus } from "@/lib/types"
 import { cn } from "@/lib/utils"
 
-const statusStyles: Record<BranchStatus, string> = {
-    activa: 'bg-green-500/20 text-green-400 border-green-500/30',
-    inactiva: 'bg-slate-500/20 text-slate-400 border-slate-500/30',
-    proxima: 'bg-amber-500/20 text-amber-400 border-amber-500/30',
-    urgencias: 'bg-red-500/20 text-red-400 border-red-500/30',
+const statusToVariant: Record<BranchStatus, "default" | "secondary" | "destructive" | "outline"> = {
+    activa: "secondary",
+    inactiva: "outline",
+    proxima: "default",
+    urgencias: "destructive",
 }
 
 interface BranchesTableProps {
@@ -80,7 +80,7 @@ export function BranchesTable({ data, onEdit, onDelete }: BranchesTableProps) {
                   <TableCell>{branch.city}, {branch.state}</TableCell>
                   <TableCell>{branch.phone}</TableCell>
                   <TableCell>
-                    <Badge className={cn("capitalize", statusStyles[branch.status])}>
+                    <Badge variant={statusToVariant[branch.status]} className="capitalize">
                       {branch.status}
                     </Badge>
                   </TableCell>

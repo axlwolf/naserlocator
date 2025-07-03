@@ -11,11 +11,11 @@ interface BranchCardProps {
   onSelect: () => void;
 }
 
-const statusStyles: Record<BranchStatus, string> = {
-    activa: 'bg-green-500/20 text-green-400 border-green-500/30',
-    inactiva: 'bg-slate-500/20 text-slate-400 border-slate-500/30',
-    proxima: 'bg-amber-500/20 text-amber-400 border-amber-500/30',
-    urgencias: 'bg-red-500/20 text-red-400 border-red-500/30 animate-pulse',
+const statusToVariant: Record<BranchStatus, "default" | "secondary" | "destructive" | "outline"> = {
+    activa: "secondary",
+    inactiva: "outline",
+    proxima: "default",
+    urgencias: "destructive",
 }
 
 const BranchCard = ({ branch, isSelected, onSelect }: BranchCardProps) => {
@@ -35,7 +35,7 @@ const BranchCard = ({ branch, isSelected, onSelect }: BranchCardProps) => {
                 {branch.city}, {branch.state}
             </p>
           </div>
-          <Badge className={cn('text-xs capitalize', statusStyles[branch.status])}>
+          <Badge variant={statusToVariant[branch.status]} className={cn('text-xs capitalize')}>
             {branch.status === 'urgencias' && <Zap className="h-3 w-3 mr-1.5" />}
             {branch.status}
           </Badge>
