@@ -9,6 +9,7 @@ interface BranchCardProps {
   branch: Branch;
   isSelected: boolean;
   onSelect: () => void;
+  style?: React.CSSProperties;
 }
 
 const statusToVariant: Record<BranchStatus, "default" | "secondary" | "destructive" | "outline"> = {
@@ -18,14 +19,16 @@ const statusToVariant: Record<BranchStatus, "default" | "secondary" | "destructi
     urgencias: "destructive",
 }
 
-const BranchCard = ({ branch, isSelected, onSelect }: BranchCardProps) => {
+const BranchCard = ({ branch, isSelected, onSelect, ...props }: BranchCardProps) => {
   return (
     <Card 
         className={cn(
             "cursor-pointer border-2 bg-slate-900/50 backdrop-blur-sm transition-all duration-300 hover:border-primary/80 hover:-translate-y-1",
+            "opacity-0 animate-fade-in-up",
             isSelected ? 'border-primary shadow-2xl shadow-primary/10' : 'border-slate-800'
         )}
         onClick={onSelect}
+        {...props}
     >
         <CardHeader className="flex-row gap-4 items-start p-4">
           <div className="flex-1">

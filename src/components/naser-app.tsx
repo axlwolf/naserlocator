@@ -11,7 +11,7 @@ import { Input } from './ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 import { Button } from './ui/button';
 import BranchCard from './branch-card';
-import { LocateIcon, X } from 'lucide-react';
+import { LocateIcon, X, MapPinOff } from 'lucide-react';
 
 const MexicoMap = dynamic(() => import('./mexico-map'), { ssr: false });
 
@@ -169,18 +169,26 @@ export default function NaserApp({ branches }: { branches: Branch[] }) {
                 )}
             </div>
             {filteredBranches.length > 0 ? (
-                filteredBranches.map(branch => (
+                filteredBranches.map((branch, index) => (
                     <BranchCard 
                         key={branch.id} 
                         branch={branch} 
                         isSelected={selectedBranch?.id === branch.id}
                         onSelect={() => handleSelectBranch(branch)}
+                        style={{ animationDelay: `${index * 75}ms` }}
                     />
                 ))
             ) : (
-                <div className="flex flex-col items-center justify-center h-full text-center p-8 bg-card rounded-lg">
-                    <X className="h-12 w-12 text-muted-foreground mb-4" />
-                    <p className="text-muted-foreground">No se encontraron sucursales con los filtros seleccionados.</p>
+                <div className="flex flex-col items-center justify-center h-full text-center p-8 bg-card/50 rounded-lg border border-dashed">
+                    <MapPinOff className="h-12 w-12 text-muted-foreground mb-4" />
+                    <h4 className="text-xl font-semibold text-foreground">Sin Resultados</h4>
+                    <p className="text-muted-foreground mt-2 mb-4">No se encontraron sucursales que coincidan con tu búsqueda.</p>
+                    <Button variant="outline" onClick={() => {
+                        setSearchTerm('');
+                        setSelectedService('all');
+                    }}>
+                        Limpiar filtros
+                    </Button>
                 </div>
             )}
         </div>
