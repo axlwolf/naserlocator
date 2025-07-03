@@ -40,7 +40,7 @@ El objetivo es crear una interfaz para que los administradores puedan gestionar 
 
 La fase final para asegurar que la aplicación esté lista para producción.
 
-- [ ] **Mejoras de UI/UX:** Añadir animaciones sutiles, transiciones y mejorar el diseño general para una experiencia más fluida.
+- [x] **Mejoras de UI/UX:** Añadir animaciones sutiles, transiciones y mejorar el diseño general para una experiencia más fluida.
 - [ ] **Revisión de Accesibilidad (A11y):** Asegurar que la aplicación sea usable por personas con discapacidades.
 - [ ] **Optimización de Rendimiento:** Analizar y mejorar los tiempos de carga, especialmente si el número de sucursales crece.
 - [ ] **Preparación para Despliegue:** Configurar el entorno de producción y desplegar la aplicación.
