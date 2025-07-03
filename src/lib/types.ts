@@ -1,4 +1,5 @@
-export type Service = "Velación" | "Cremación" | "Traslados" | "Embalsamamiento" | "Capillas" | "Gestoría";
+
+export type Service = string;
 
 export type BranchStatus = "activa" | "inactiva" | "proxima" | "urgencias";
 
@@ -20,3 +21,5 @@ export interface Branch {
   imageUrl: string;
   manager: string;
 }
+
+    
