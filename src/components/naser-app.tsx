@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 import dynamic from 'next/dynamic';
 
 import type { Branch, Service } from '@/lib/types';
@@ -20,6 +20,7 @@ export default function NaserApp({ branches }: { branches: Branch[] }) {
   const [selectedService, setSelectedService] = useState<Service | 'all'>('all');
   const [selectedBranch, setSelectedBranch] = useState<Branch | null>(null);
   const [selectedState, setSelectedState] = useState<string | null>(null);
+  const listRef = useRef<HTMLUListElement>(null);
 
   useEffect(() => {
     const firstUrgent = branches.find(b => b.status === 'urgencias');
@@ -42,6 +43,15 @@ export default function NaserApp({ branches }: { branches: Branch[] }) {
       return matchesSearch && matchesService && matchesState;
     });
   }, [branches, searchTerm, selectedService, selectedState]);
+  
+  useEffect(() => {
+    if (selectedBranch && listRef.current) {
+        const selectedBranchElement = listRef.current.querySelector(`[data-branch-id="${selectedBranch.id}"]`);
+        if (selectedBranchElement) {
+            selectedBranchElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+    }
+  }, [selectedBranch]);
 
   const handleStateClick = (stateName: string | null) => {
     setSelectedState(stateName);
@@ -125,9 +135,10 @@ export default function NaserApp({ branches }: { branches: Branch[] }) {
             className="md:w-1/2"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
+            aria-label="Buscar sucursal"
           />
           <div className="flex gap-4">
-            <Select value={selectedService} onValueChange={(v) => setSelectedService(v as Service | 'all')}>
+            <Select value={selectedService} onValueChange={(v) => setSelectedService(v as Service | 'all')} aria-label="Filtrar por servicio">
               <SelectTrigger className="w-full md:w-[240px]">
                 <SelectValue placeholder="Filtrar por servicio" />
               </SelectTrigger>
@@ -156,8 +167,8 @@ export default function NaserApp({ branches }: { branches: Branch[] }) {
                 />
             </div>
         </div>
-        <div className="lg:col-span-1 h-[600px] overflow-y-auto pr-2 space-y-4">
-            <div className='flex justify-between items-center'>
+        <div className="h-[600px] overflow-y-auto pr-2">
+            <div className='flex justify-between items-center mb-4'>
                 <h3 className="text-2xl font-semibold text-foreground">
                 {selectedState ? `Sucursales en ${selectedState}` : 'Todas las sucursales'} ({filteredBranches.length})
                 </h3>
@@ -168,29 +179,32 @@ export default function NaserApp({ branches }: { branches: Branch[] }) {
                     </Button>
                 )}
             </div>
-            {filteredBranches.length > 0 ? (
-                filteredBranches.map((branch, index) => (
-                    <BranchCard 
-                        key={branch.id} 
-                        branch={branch} 
-                        isSelected={selectedBranch?.id === branch.id}
-                        onSelect={() => handleSelectBranch(branch)}
-                        style={{ animationDelay: `${index * 75}ms` }}
-                    />
-                ))
-            ) : (
-                <div className="flex flex-col items-center justify-center h-full text-center p-8 bg-card/50 rounded-lg border border-dashed">
-                    <MapPinOff className="h-12 w-12 text-muted-foreground mb-4" />
-                    <h4 className="text-xl font-semibold text-foreground">Sin Resultados</h4>
-                    <p className="text-muted-foreground mt-2 mb-4">No se encontraron sucursales que coincidan con tu búsqueda.</p>
-                    <Button variant="outline" onClick={() => {
-                        setSearchTerm('');
-                        setSelectedService('all');
-                    }}>
-                        Limpiar filtros
-                    </Button>
-                </div>
-            )}
+             <ul ref={listRef} className="space-y-4" aria-label="Lista de sucursales">
+                {filteredBranches.length > 0 ? (
+                    filteredBranches.map((branch, index) => (
+                        <li key={branch.id} data-branch-id={branch.id}>
+                            <BranchCard 
+                                branch={branch} 
+                                isSelected={selectedBranch?.id === branch.id}
+                                onSelect={() => handleSelectBranch(branch)}
+                                style={{ animationDelay: `${index * 75}ms` }}
+                            />
+                        </li>
+                    ))
+                ) : (
+                    <div className="flex flex-col items-center justify-center h-full text-center p-8 bg-card/50 rounded-lg border border-dashed">
+                        <MapPinOff className="h-12 w-12 text-muted-foreground mb-4" />
+                        <h4 className="text-xl font-semibold text-foreground">Sin Resultados</h4>
+                        <p className="text-muted-foreground mt-2 mb-4">No se encontraron sucursales que coincidan con tu búsqueda.</p>
+                        <Button variant="outline" onClick={() => {
+                            setSearchTerm('');
+                            setSelectedService('all');
+                        }}>
+                            Limpiar filtros
+                        </Button>
+                    </div>
+                )}
+             </ul>
         </div>
       </div>
     </div>

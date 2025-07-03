@@ -57,6 +57,7 @@ export function BranchesTable({ data, onEdit, onDelete }: BranchesTableProps) {
             setFilter(event.target.value)
           }
           className="max-w-sm"
+          aria-label="Filtrar sucursales por nombre, ciudad o estado"
         />
       </div>
       <div className="rounded-md border">

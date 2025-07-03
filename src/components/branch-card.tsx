@@ -1,8 +1,9 @@
+
 import type { Branch, BranchStatus } from '@/lib/types';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Badge } from './ui/badge';
 import { cn } from '@/lib/utils';
-import { Building, Clock, MapPin, Phone, Zap } from 'lucide-react';
+import { Clock, MapPin, Phone, Zap } from 'lucide-react';
 import Image from 'next/image';
 
 interface BranchCardProps {
@@ -20,16 +21,37 @@ const statusToVariant: Record<BranchStatus, "default" | "secondary" | "destructi
 }
 
 const BranchCard = ({ branch, isSelected, onSelect, ...props }: BranchCardProps) => {
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      onSelect();
+    }
+  };
+
   return (
     <Card 
         className={cn(
-            "cursor-pointer border-2 bg-slate-900/50 backdrop-blur-sm transition-all duration-300 hover:border-primary/80 hover:-translate-y-1",
+            "cursor-pointer border-2 bg-slate-900/50 backdrop-blur-sm transition-all duration-300 hover:border-primary/80 hover:-translate-y-1 overflow-hidden",
             "opacity-0 animate-fade-in-up",
             isSelected ? 'border-primary shadow-2xl shadow-primary/10' : 'border-slate-800'
         )}
         onClick={onSelect}
+        onKeyDown={handleKeyDown}
+        role="button"
+        tabIndex={0}
+        aria-label={`Seleccionar sucursal ${branch.name}`}
         {...props}
     >
+        <div className="relative h-40 w-full">
+            <Image
+                src={branch.imageUrl}
+                alt={`Imagen de la sucursal ${branch.name}`}
+                fill
+                className="object-cover"
+                sizes="(max-width: 1024px) 100vw, 33vw"
+                data-ai-hint="funeral home building"
+            />
+        </div>
         <CardHeader className="flex-row gap-4 items-start p-4">
           <div className="flex-1">
             <CardTitle className="text-base font-semibold text-foreground">{branch.name}</CardTitle>
