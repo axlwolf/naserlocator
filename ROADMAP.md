@@ -36,16 +36,7 @@ El objetivo es crear una interfaz para que los administradores puedan gestionar 
 - [x] **Funcionalidad de Eliminación:** Se ha añadido un botón para eliminar sucursales, con un diálogo de confirmación para prevenir borrados accidentales.
 - [ ] **Persistencia de Datos (Futuro):** Migrar los datos estáticos a una base de datos como Firebase Firestore para que los cambios sean permanentes.
 
-## Fase 4: Inteligencia Artificial y Mejoras Avanzadas
-
-Una vez que la aplicación sea robusta, añadiremos funcionalidades avanzadas.
-
-- [ ] **Autenticación para Administradores:** Proteger la ruta `/admin` para que solo usuarios autorizados puedan realizar cambios.
-- [ ] **Asistente de Búsqueda con IA:**
-    - Implementar un chatbot o una barra de búsqueda mejorada con Genkit.
-    - El asistente ayudará a los usuarios a encontrar la sucursal ideal respondiendo a preguntas en lenguaje natural (ej. "dónde hay un servicio de velación abierto 24h en Guadalajara").
-
-## Fase 5: Pulido y Despliegue
+## Fase 4: Pulido y Despliegue
 
 La fase final para asegurar que la aplicación esté lista para producción.
 
@@ -53,3 +44,12 @@ La fase final para asegurar que la aplicación esté lista para producción.
 - [ ] **Revisión de Accesibilidad (A11y):** Asegurar que la aplicación sea usable por personas con discapacidades.
 - [ ] **Optimización de Rendimiento:** Analizar y mejorar los tiempos de carga, especialmente si el número de sucursales crece.
 - [ ] **Preparación para Despliegue:** Configurar el entorno de producción y desplegar la aplicación.
+
+## Fase 5: Inteligencia Artificial y Mejoras Avanzadas
+
+Una vez que la aplicación sea robusta, añadiremos funcionalidades avanzadas.
+
+- [ ] **Autenticación para Administradores:** Proteger la ruta `/admin` para que solo usuarios autorizados puedan realizar cambios.
+- [ ] **Asistente de Búsqueda con IA:**
+    - Implementar un chatbot o una barra de búsqueda mejorada con Genkit.
+    - El asistente ayudará a los usuarios a encontrar la sucursal ideal respondiendo a preguntas en lenguaje natural (ej. "dónde hay un servicio de velación abierto 24h en Guadalajara").
