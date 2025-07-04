@@ -57,7 +57,7 @@ export default function MexicoMap({ branches, selectedState, onStateClick }: Mex
         const isSelected = selectedState === stateName;
 
         return cn(
-            'stroke-background/60 stroke-[0.5] transition-all duration-300 ease-in-out origin-center', {
+            'stroke-background/60 stroke-[0.5] transition-all duration-300 ease-in-out origin-center focus:outline-none', {
             'fill-primary scale-105': isSelected,
             'fill-destructive/80 hover:fill-destructive cursor-pointer': !isSelected && isUrgent,
             'fill-card-foreground hover:fill-primary/80 cursor-pointer': !isSelected && !isUrgent && isActive,
